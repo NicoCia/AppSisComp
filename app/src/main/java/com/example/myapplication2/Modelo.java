@@ -18,11 +18,9 @@ public class Modelo {
     }
 
     public void updateModel(String cadena){
-        int Ttemp=0;
-        int Htemp=0;
         //substring(int beginIndex, int endIndex) temperatura xx humedad xx
-        Ttemp = Integer.parseInt(cadena.substring(12,13));
-        Htemp = Integer.parseInt(cadena.substring(23,24));
+        int Ttemp = Integer.parseInt(cadena.substring(12,13));
+        int Htemp = Integer.parseInt(cadena.substring(23,24));
         setTemperatura(Ttemp);
         setHumedad(Htemp);
         validarNuevosValores();
