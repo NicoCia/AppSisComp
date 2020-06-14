@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.myapplication2.ui.main.View;
+import com.example.myapplication2.ui.vista.VistaFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, View.newInstance())
+                    .replace(R.id.container, VistaFragment.newInstance())
                     .commitNow();
         }
     }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Compost Control</string>
+    <string name="boton_prueba">Holi</string>
+    <string name="texto_prueba">Hola bb</string>
 </resources>
