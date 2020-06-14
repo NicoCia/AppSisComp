@@ -26,6 +26,16 @@ public class Modelo {
             setHumedad(Htemp);
             validarNuevosValores();
         }
+        //temperaturaMAX xx
+        else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==18){
+            int TMAXtemp = Integer.parseInt(cadena.substring(16, 17));
+            setTemperaturaMAX(TMAXtemp);
+        }
+        //humedadMIN xx
+        else if(cadena.startsWith("humedadMIN")&&cadena.length()==13){
+            int TMAXtemp = Integer.parseInt(cadena.substring(11, 12));
+            setTemperaturaMAX(TMAXtemp);
+        }
     }
 
     private void validarNuevosValores(){
