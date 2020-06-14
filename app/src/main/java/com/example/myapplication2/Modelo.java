@@ -17,6 +17,33 @@ public class Modelo {
         alarma=false;
     }
 
+    public void updateModel(String cadena){
+        int Ttemp=0;
+        int Htemp=0;
+        //substring(int beginIndex, int endIndex) temperatura xx humedad xx
+        Ttemp = Integer.parseInt(cadena.substring(12,13));
+        Htemp = Integer.parseInt(cadena.substring(23,24));
+        setTemperatura(Ttemp);
+        setHumedad(Htemp);
+        validarNuevosValores();
+    }
+
+    private void validarNuevosValores(){
+        if(fueraDeLimites()){
+            setAlarma(true);
+            notificar();
+        }
+        else setAlarma(false);
+    }
+
+   private boolean fueraDeLimites(){
+        return temperatura>=temperaturaMAX||humedad<humedadMIN;
+   }
+
+    public void notificar(){
+
+    }
+
     public int getTemperatura() {
         return temperatura;
     }
