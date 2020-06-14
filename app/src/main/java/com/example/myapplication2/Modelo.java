@@ -18,12 +18,14 @@ public class Modelo {
     }
 
     public void updateModel(String cadena){
-        //substring(int beginIndex, int endIndex) temperatura xx humedad xx
-        int Ttemp = Integer.parseInt(cadena.substring(12,13));
-        int Htemp = Integer.parseInt(cadena.substring(23,24));
-        setTemperatura(Ttemp);
-        setHumedad(Htemp);
-        validarNuevosValores();
+        //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
+        if(cadena.length()==25) {
+            int Ttemp = Integer.parseInt(cadena.substring(12, 13));
+            int Htemp = Integer.parseInt(cadena.substring(23, 24));
+            setTemperatura(Ttemp);
+            setHumedad(Htemp);
+            validarNuevosValores();
+        }
     }
 
     private void validarNuevosValores(){
