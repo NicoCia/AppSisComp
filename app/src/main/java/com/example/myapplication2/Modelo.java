@@ -17,6 +17,16 @@ public class Modelo {
         alarma=false;
     }
 
+    /*  Recibe un string y actualiza las variables asociadas, controlando si los valores se
+        encuentran en los limites permitidos.
+        Los formatos de mensaje válidos son:
+            - temperatura xx humedad xx
+            - temperaturaMAX xx
+            - humedadMIN xx
+        Si los valores de temperatura y humedad están fuera de rango, se notifica al controlador y
+        se setea alarma en 1.
+
+     */
     public void updateModel(String cadena){
         //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
         if(cadena.length()==25) {
@@ -30,11 +40,13 @@ public class Modelo {
         else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==18){
             int TMAXtemp = Integer.parseInt(cadena.substring(16, 17));
             setTemperaturaMAX(TMAXtemp);
+            validarNuevosValores();
         }
         //humedadMIN xx
         else if(cadena.startsWith("humedadMIN")&&cadena.length()==13){
             int HMINtemp = Integer.parseInt(cadena.substring(11, 12));
             setHumedadMIN(HMINtemp);
+            validarNuevosValores();
         }
     }
 
@@ -58,7 +70,7 @@ public class Modelo {
         return temperatura;
     }
 
-    public void setTemperatura(int temperatura) {
+    private void setTemperatura(int temperatura) {
         this.temperatura = temperatura;
     }
 
@@ -66,7 +78,7 @@ public class Modelo {
         return temperaturaMAX;
     }
 
-    public void setTemperaturaMAX(int temperaturaMAX) {
+    private void setTemperaturaMAX(int temperaturaMAX) {
         this.temperaturaMAX = temperaturaMAX;
     }
 
@@ -74,7 +86,7 @@ public class Modelo {
         return humedad;
     }
 
-    public void setHumedad(int humedad) {
+    private void setHumedad(int humedad) {
         this.humedad = humedad;
     }
 
@@ -82,7 +94,7 @@ public class Modelo {
         return humedadMIN;
     }
 
-    public void setHumedadMIN(int humedadMIN) {
+    private void setHumedadMIN(int humedadMIN) {
         this.humedadMIN = humedadMIN;
     }
 
