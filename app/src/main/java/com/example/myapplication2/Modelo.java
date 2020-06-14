@@ -30,11 +30,13 @@ public class Modelo {
         else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==18){
             int TMAXtemp = Integer.parseInt(cadena.substring(16, 17));
             setTemperaturaMAX(TMAXtemp);
+            validarNuevosValores();
         }
         //humedadMIN xx
         else if(cadena.startsWith("humedadMIN")&&cadena.length()==13){
             int HMINtemp = Integer.parseInt(cadena.substring(11, 12));
             setHumedadMIN(HMINtemp);
+            validarNuevosValores();
         }
     }
 
