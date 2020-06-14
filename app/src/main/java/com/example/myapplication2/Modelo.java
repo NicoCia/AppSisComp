@@ -58,7 +58,7 @@ public class Modelo {
         return temperatura;
     }
 
-    public void setTemperatura(int temperatura) {
+    private void setTemperatura(int temperatura) {
         this.temperatura = temperatura;
     }
 
@@ -66,7 +66,7 @@ public class Modelo {
         return temperaturaMAX;
     }
 
-    public void setTemperaturaMAX(int temperaturaMAX) {
+    private void setTemperaturaMAX(int temperaturaMAX) {
         this.temperaturaMAX = temperaturaMAX;
     }
 
@@ -74,7 +74,7 @@ public class Modelo {
         return humedad;
     }
 
-    public void setHumedad(int humedad) {
+    private void setHumedad(int humedad) {
         this.humedad = humedad;
     }
 
@@ -82,7 +82,7 @@ public class Modelo {
         return humedadMIN;
     }
 
-    public void setHumedadMIN(int humedadMIN) {
+    private void setHumedadMIN(int humedadMIN) {
         this.humedadMIN = humedadMIN;
     }
 
