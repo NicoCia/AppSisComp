@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">Compost Control</string>
-    <string name="boton_prueba">Holi</string>
-    <string name="texto_prueba">Hola bb</string>
+    <string name="send">Aplicar</string>
+    <string name="limTemp">#Valor limite temperatura#</string>
+    <string name="limHum">#Valor limite humedad#</string>
+    <string name="actualValues">#Valores actuales hum y temp#</string>
+    <string name="up">+</string>
+    <string name="down">-</string>
+    <string name="TempUnit">°C</string>
+    <string name="HumUnit">%</string>
 </resources>

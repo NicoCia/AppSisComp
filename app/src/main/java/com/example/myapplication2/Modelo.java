@@ -17,7 +17,7 @@ public class Modelo {
         alarma=false;
     }
 
-    /*  Recibe un string y actualiza las variables asociadas, controlando si los valores se
+    /**  Recibe un string y actualiza las variables asociadas, controlando si los valores se
         encuentran en los limites permitidos.
         Los formatos de mensaje válidos son:
             - temperatura xx humedad xx
@@ -26,7 +26,7 @@ public class Modelo {
         Si los valores de temperatura y humedad están fuera de rango, se notifica al controlador y
         se setea alarma en 1.
 
-     */
+     **/
     public void updateModel(String cadena){
         //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
         if(cadena.length()==25) {
