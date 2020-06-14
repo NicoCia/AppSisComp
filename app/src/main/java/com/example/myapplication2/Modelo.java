@@ -33,8 +33,8 @@ public class Modelo {
         }
         //humedadMIN xx
         else if(cadena.startsWith("humedadMIN")&&cadena.length()==13){
-            int TMAXtemp = Integer.parseInt(cadena.substring(11, 12));
-            setTemperaturaMAX(TMAXtemp);
+            int HMINtemp = Integer.parseInt(cadena.substring(11, 12));
+            setHumedadMIN(HMINtemp);
         }
     }
 
