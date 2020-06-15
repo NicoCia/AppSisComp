@@ -71,7 +71,6 @@ public class Cliente { /**no hace falta que sea runnable**/
         return datoRecibido;
     }
 
-
     public boolean resultadoEnvio() {
         return flag;
     }
