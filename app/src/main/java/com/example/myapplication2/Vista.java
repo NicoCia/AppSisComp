@@ -42,8 +42,8 @@ public class Vista extends AppCompatActivity {
             String aux = br.readLine();
             limT = Integer.parseInt(aux.substring(3,5));
             limH = Integer.parseInt(aux.substring(9,11));
-            Tvalue = aux.substring(18,20);
-            Hvalue = aux.substring(26,28);
+            Tvalue = aux.substring(17,19);
+            Hvalue = aux.substring(25,27);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

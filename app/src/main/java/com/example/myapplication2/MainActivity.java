@@ -14,7 +14,7 @@ import java.io.FileOutputStream;
 public class MainActivity extends AppCompatActivity {
 
     private static final String filename = "my_data.txt";
-    private static final String defaultValues = "T: 60 H: 40 tAct0 00 hAct 00\0";
+    private static final String defaultValues = "T: 60 H: 40 tAct 00 hAct 00\0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
