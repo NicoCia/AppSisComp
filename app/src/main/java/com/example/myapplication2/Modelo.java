@@ -1,6 +1,11 @@
 package com.example.myapplication2;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 
@@ -14,13 +19,24 @@ public class Modelo {
     private String pathname;
 
     public Modelo(String pathArchivo){
-        temperatura=0;
-        temperaturaMAX=60;
-        humedad=40;
-        humedadMIN=30;
-        tiempo=0;
-        alarma=false;
-        pathname = pathArchivo;
+        try {
+            File archivo = new File (pathArchivo);
+            FileReader fr = null;
+            fr = new FileReader(archivo);
+            BufferedReader br = new BufferedReader(fr);
+            String aux = br.readLine();
+            temperatura =    Integer.parseInt(aux.substring(17,19));
+            humedad =        Integer.parseInt(aux.substring(25,27));
+            temperaturaMAX = Integer.parseInt(aux.substring(3,5));
+            humedadMIN =     Integer.parseInt(aux.substring(9,11));
+            tiempo=0;
+            alarma=false;
+            pathname = pathArchivo;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**  Recibe un string y actualiza las variables asociadas, controlando si los valores se
