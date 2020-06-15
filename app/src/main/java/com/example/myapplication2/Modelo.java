@@ -1,5 +1,16 @@
 package com.example.myapplication2;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+
+import java.io.File;
+import java.io.FileOutputStream;
+
+
 public class Modelo {
     private int temperatura;
     private int temperaturaMAX;
@@ -7,6 +18,7 @@ public class Modelo {
     private int humedadMIN;
     private int tiempo;
     private boolean alarma;
+    private static final String filename = "my_data.txt";
 
     public Modelo(){
         temperatura=0;
@@ -58,7 +70,28 @@ public class Modelo {
         else setAlarma(false);
     }
 
-   private boolean fueraDeLimites(){
+    private void actualizarArchivo(){
+        //Formato del string del archivo: "T: 60 H: 40 tAct 00 hAct 00\0"
+        String cadenaNueva= "T: "+temperaturaMAX+" H: "+ humedadMIN;
+        cadenaNueva+=" tAct "+formatoDosDigitos(temperatura)+" hAct "+formatoDosDigitos(humedad)+"\0";
+/*        try {
+            FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(cadenaNueva.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+    }
+
+    private String formatoDosDigitos(int numero){
+        String cadena="";
+        if(numero<10)cadena="0";
+        cadena+=numero;
+        return cadena;
+    }
+
+
+    private boolean fueraDeLimites(){
         return temperatura>=temperaturaMAX||humedad<humedadMIN;
    }
 
@@ -113,4 +146,7 @@ public class Modelo {
     public void setAlarma(boolean alarma) {
         this.alarma = alarma;
     }
+
+
+
 }
