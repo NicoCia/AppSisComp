@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if(!existsFile(filename)){
-            File file = new File(this.getApplicationContext().getFilesDir(), filename);
+            new File(this.getApplicationContext().getFilesDir(), filename);
             try {
                 FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                 outputStream.write(defaultValues.getBytes());
