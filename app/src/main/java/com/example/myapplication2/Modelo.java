@@ -71,15 +71,12 @@ public class Modelo {
 
     private void actualizarArchivo(){
         //Formato del string del archivo: "T: 60 H: 40 tAct 00 hAct 00\0"
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-
         String cadenaNueva= "T: "+temperaturaMAX+" H: "+ humedadMIN;
         cadenaNueva+=" tAct "+formatoDosDigitos(temperatura)+" hAct "+formatoDosDigitos(humedad)+"\0";
        try{
-            fichero = new FileWriter(pathname);
-            pw = new PrintWriter(fichero);
-            pw.println(cadenaNueva);
+           FileWriter fichero = new FileWriter(pathname);
+           PrintWriter pw = new PrintWriter(fichero);
+           pw.println(cadenaNueva);
         }
        catch (Exception e) {
            e.printStackTrace();
