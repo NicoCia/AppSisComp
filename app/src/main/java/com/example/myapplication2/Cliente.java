@@ -61,6 +61,17 @@ public class Cliente { /**no hace falta que sea runnable**/
         }
     }
 
+    public String socketReceive(){
+        String datoRecibido = "";
+        try {
+            datoRecibido = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return datoRecibido;
+    }
+
+
     public boolean resultadoEnvio() {
         return flag;
     }
