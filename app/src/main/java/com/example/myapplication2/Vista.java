@@ -1,9 +1,12 @@
 package com.example.myapplication2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -54,6 +57,7 @@ public class Vista extends AppCompatActivity {
         limTemp.setText("\n" + limT + " °C\n");
         limHum.setText("\n" + limH + " %\n");
         actVal.setText("Temperatura: " + Tvalue + " °C" + "\n Humedad: " + Hvalue + " %");
+        //actVal.setText(new File(this.getApplicationContext().getFilesDir(), filename).getAbsolutePath());
     }
 
     /**
@@ -84,9 +88,50 @@ public class Vista extends AppCompatActivity {
     }
 
     /**
-     * Metodo de actualizacion de la vista con los nuevos valores
+     * Imprime los valores actuales de Temperatura y Humedad
      */
-    public void updateView(){
+    private void printData(){
 
+        try {
+            FileInputStream fileInput = openFileInput(filename);
+            InputStreamReader file = new InputStreamReader(fileInput);
+            BufferedReader br=new BufferedReader(file);
+            String aux = br.readLine();
+            Tvalue = aux.substring(17,19);
+            Hvalue = aux.substring(25,27);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        actVal.setText("Temperatura: " + Tvalue + " °C" + "\n Humedad: " + Hvalue + " %");
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Register mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("my-event"));
+    }
+
+    // handler for received Intents for the "my-event" event
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Extract data included in the Intent
+            String message = intent.getStringExtra("message");
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onPause();
     }
 }
