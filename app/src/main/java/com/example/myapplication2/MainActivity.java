@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         }, 2000);
     }
 
+    /**
+     * Metodo que controla la existencia en memoria interna del fichero de datos
+     * @param fileName Nombre del archivo de datos
+     * @return boolean true si el archivo existe, false en caso contrario
+     */
     public boolean existsFile(String fileName) {
         for (String tmp : fileList()) {
             if (tmp.equals(fileName))
