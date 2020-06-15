@@ -19,12 +19,11 @@ public class Vista extends AppCompatActivity {
     private TextView limTemp;
     private TextView limHum;
     private TextView actVal;
-    private Context ctx;
     private static final String filename = "my_data.txt";
     private static int limT;
     private static int limH;
     private static String Tvalue;
-    private static String Hvalue = "30";
+    private static String Hvalue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,6 @@ public class Vista extends AppCompatActivity {
         this.limTemp = findViewById(R.id.textViewTempLim);
         this.limHum = findViewById(R.id.textViewHumLim);
         this.actVal = findViewById(R.id.textViewActVal);
-        this.ctx = this.getApplicationContext();
 
         try {
             FileInputStream fileInput = openFileInput(filename);
