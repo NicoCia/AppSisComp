@@ -69,10 +69,10 @@ public class Vista extends AppCompatActivity {
     public void onClick(View view){
 
         switch (view.getId()){
-            case R.id.buttonHup:limH+=5; limHum.setText("\n" + limH + " %\n"); break;
-            case R.id.buttonTup: limT+=5; limTemp.setText("\n" + limT + " °C\n"); break;
-            case R.id.buttonHdown: limH-=5; limHum.setText("\n" + limH + " %\n"); break;
-            case R.id.buttonTdown:limT-=5; limTemp.setText("\n" + limT + " °C\n"); break;
+            case R.id.buttonHup:if(limH<95){limH+=5; limHum.setText("\n" + limH + " %\n");} break;
+            case R.id.buttonTup:if(limT<95){limT+=5; limTemp.setText("\n" + limT + " °C\n");} break;
+            case R.id.buttonHdown:if(limH>20){limH-=5; limHum.setText("\n" + limH + " %\n");} break;
+            case R.id.buttonTdown:if(limT>20){limT-=5; limTemp.setText("\n" + limT + " °C\n");} break;
             default: break;
         }
 
@@ -84,7 +84,10 @@ public class Vista extends AppCompatActivity {
      * @param view  nombre del boton presionado
      */
     public void isEvent(View view){
-
+        Intent intent = new Intent("is-event");
+        intent.putExtra("Temp", "temperaturaMAX " + limT);
+        intent.putExtra("Temp", "humedadMIN " + limH);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     /**
@@ -116,7 +119,7 @@ public class Vista extends AppCompatActivity {
 
         // Register mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("my-event"));
+                new IntentFilter("update-view"));
     }
 
     // handler for received Intents for the "my-event" event
@@ -124,7 +127,7 @@ public class Vista extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Extract data included in the Intent
-            String message = intent.getStringExtra("message");
+            printData();
         }
     };
 
