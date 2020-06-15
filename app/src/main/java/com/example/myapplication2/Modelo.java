@@ -1,14 +1,7 @@
 package com.example.myapplication2;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 
 
 public class Modelo {
@@ -18,15 +11,16 @@ public class Modelo {
     private int humedadMIN;
     private int tiempo;
     private boolean alarma;
-    private static final String filename = "my_data.txt";
+    private String pathname = "my_data.txt";
 
-    public Modelo(){
+    public Modelo(String pathArchivo){
         temperatura=0;
         temperaturaMAX=60;
         humedad=40;
         humedadMIN=30;
         tiempo=0;
         alarma=false;
+        pathname = pathArchivo;
     }
 
     /**  Recibe un string y actualiza las variables asociadas, controlando si los valores se
@@ -60,6 +54,7 @@ public class Modelo {
             setHumedadMIN(HMINtemp);
             validarNuevosValores();
         }
+        actualizarArchivo();
     }
 
     private void validarNuevosValores(){
@@ -70,17 +65,25 @@ public class Modelo {
         else setAlarma(false);
     }
 
+    private boolean fueraDeLimites(){
+        return temperatura>=temperaturaMAX||humedad<humedadMIN;
+    }
+
     private void actualizarArchivo(){
         //Formato del string del archivo: "T: 60 H: 40 tAct 00 hAct 00\0"
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+
         String cadenaNueva= "T: "+temperaturaMAX+" H: "+ humedadMIN;
         cadenaNueva+=" tAct "+formatoDosDigitos(temperatura)+" hAct "+formatoDosDigitos(humedad)+"\0";
-/*        try {
-            FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(cadenaNueva.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+       try{
+            fichero = new FileWriter(pathname);
+            pw = new PrintWriter(fichero);
+            pw.println(cadenaNueva);
+        }
+       catch (Exception e) {
+           e.printStackTrace();
+       }
     }
 
     private String formatoDosDigitos(int numero){
@@ -89,11 +92,6 @@ public class Modelo {
         cadena+=numero;
         return cadena;
     }
-
-
-    private boolean fueraDeLimites(){
-        return temperatura>=temperaturaMAX||humedad<humedadMIN;
-   }
 
     public void notificar(){
 
@@ -146,7 +144,6 @@ public class Modelo {
     public void setAlarma(boolean alarma) {
         this.alarma = alarma;
     }
-
 
 
 }
