@@ -2,16 +2,35 @@ package com.example.myapplication2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.TextView;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String filename = "my_data.txt";
+    private static final String defaultValues = "T: 60 H: 40 tAct0 00 hAct 00\0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(!existsFile(filename)){
+            File file = new File(this.getApplicationContext().getFilesDir(), filename);
+            try {
+                FileOutputStream outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                outputStream.write(defaultValues.getBytes());
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -21,5 +40,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }, 2000);
+    }
+
+    public boolean existsFile(String fileName) {
+        for (String tmp : fileList()) {
+            if (tmp.equals(fileName))
+                return true;
+        }
+        return false;
     }
 }
