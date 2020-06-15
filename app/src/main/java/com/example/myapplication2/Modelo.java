@@ -11,7 +11,7 @@ public class Modelo {
     private int humedadMIN;
     private int tiempo;
     private boolean alarma;
-    private String pathname = "my_data.txt";
+    private String pathname;
 
     public Modelo(String pathArchivo){
         temperatura=0;
