@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Cliente { /**no hace falta que sea runnable**/
+public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
 
     //public static final String EXTRA_MESSAGE = "com.example.myapplication.MESSAGE";
     private boolean flag;
@@ -19,9 +19,14 @@ public class Cliente { /**no hace falta que sea runnable**/
     private BufferedReader in;
     private PrintWriter out;
     private boolean connection;
+    private boolean banderaEnvio;
+    private boolean finComunicacion;
+    private String datoRecibido;
+    private boolean datoNuevo;
     private static final int SERVERPORT = 6000;                     //puerto el que les parezca yo puse este en (caso de que no funcione)
     private static final String SERVER_IP = "192.168.100.15";       //IP de la rasp
     private static final String MYTAG="mytag";                      //tag para el mensaje de debugging
+
 
     public Cliente() {
         try {
@@ -33,6 +38,9 @@ public class Cliente { /**no hace falta que sea runnable**/
             this.flag = false;
             this.connection = true;
 
+            this.banderaEnvio=false;
+            this.finComunicacion=false;
+
         } catch (UnknownHostException e1) {
             e1.printStackTrace();
             this.connection = false;
@@ -42,37 +50,81 @@ public class Cliente { /**no hace falta que sea runnable**/
         }
     }
 
-    // Método para enviar el mensaje, que se pasa por parámetro.
-    public void socketSend(String message){
-        /**para leer out.println("mensaje")**/
-        try{
-            out.write(message); /**para escribir**/
-            out.flush();
-            //out.close();
-            //socket.close();
-            Log.d(MYTAG, "socketSending: ");
-            //flag=true;
+    @Override
+    public void run() {
+        while(!finComunicacion==true){
+            if(hayMensajeParaEnviar()){
+                socketSend(data);
+            }
+            else if(hayMensajeParaLeer()){
+                socketReceive();
+            }
         }
-        /*catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        catch (Exception e) {
+        cerrarSocket();
+    }
+
+    private void cerrarSocket(){
+        try {
+            out.close();
+            socket.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String socketReceive () {
-        String datoRecibido = "";
+    public void enviar(String mensaje){     //Método que voy a usar para cargar un mensaje. Setea bandera en true
+        this.data=mensaje;
+        banderaEnvio=true;
+    }
+
+    private boolean hayMensajeParaEnviar(){
+        return banderaEnvio;
+    }
+
+    private boolean hayMensajeParaLeer(){
+        boolean aux = false;
         try {
-            datoRecibido = in.readLine();
+            aux=in.ready();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return aux;
+    }
+
+
+    // Método para enviar el mensaje, que se pasa por parámetro.
+    public void socketSend(String message){
+        while(finComunicacion==false){
+            try{
+                out.write(message); /**para escribir**/
+                out.flush();
+                Log.d(MYTAG, "socketSending: ");
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            banderaEnvio=false;
+        }
+
+    }
+
+    public void socketReceive () {
+        try {
+            this.datoRecibido = in.readLine();
+            datoNuevo=true;
             //in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String leerMensaje(){
+        datoNuevo=false;
         return datoRecibido;
+    }
+
+    public boolean isDatoNuevo(){
+        return datoNuevo;
     }
 
     public boolean resultadoEnvio () {
