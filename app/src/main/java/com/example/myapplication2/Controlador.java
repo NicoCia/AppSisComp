@@ -65,14 +65,18 @@ public class Controlador extends Service{
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    updateModel("temperatura 85 humedad 93");
+                    //TODO implementar cada vez que muestreo pregunto si hay alarma, solo soy cliente,
+                    /**
+                     *
+                     */
+                    //updateModel("temperatura 85 humedad 93");
                         /*try {
                             Log.d("myTag", "llegue");
                             Thread.sleep(15000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }*/
-                    updateView();
+                    //updateView();
                     //Aquí se realiza el trabajo del hilo secundario
                     while(true) {
 

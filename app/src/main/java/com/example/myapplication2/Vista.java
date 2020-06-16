@@ -132,6 +132,7 @@ public class Vista extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Extract data included in the Intent
+            //TODO resivir mas de un intent filter, si se actualizo desplegar mensajito de que los valores fueron guardados con exito
             printData();
         }
     };
