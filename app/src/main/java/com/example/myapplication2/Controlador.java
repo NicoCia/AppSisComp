@@ -46,7 +46,6 @@ public class Controlador extends Service{
                 checkEvent(true);
                 temp = intent.getIntExtra("Temp",0);
                 hum = intent.getIntExtra("Hum",0);
-                Log.d(TAG, "Entro!!...");
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
@@ -62,7 +61,6 @@ public class Controlador extends Service{
             workerThread = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Log.d("myTag", "llegue");
                         Thread.sleep(15000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

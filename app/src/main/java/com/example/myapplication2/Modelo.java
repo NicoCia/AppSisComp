@@ -25,11 +25,9 @@ public class Modelo {
     public Modelo(String pathArchivo){
         try {
             File archivo = new File (pathArchivo);
-            Scanner input = new Scanner(archivo);
-            String aux = input.nextLine();
-            //FileReader fr = new FileReader(archivo);
-            //BufferedReader br = new BufferedReader(fr);
-            //String aux = br.readLine();
+            FileReader fr = new FileReader(archivo);
+            BufferedReader br = new BufferedReader(fr);
+            String aux = br.readLine();
             temperatura =    Integer.parseInt(aux.substring(17,19));
             humedad =        Integer.parseInt(aux.substring(25,27));
             temperaturaMAX = Integer.parseInt(aux.substring(3,5));
@@ -37,7 +35,7 @@ public class Modelo {
             tiempo=0;
             alarma=false;
             pathname = pathArchivo;
-            input.close();
+            fr.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -66,7 +64,6 @@ public class Modelo {
         }
         //temperaturaMAX xx
         else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==17){
-            Log.d("my_tag","adentrooo");
             int TMAXtemp = Integer.parseInt(cadena.substring(15, 17));
             setTemperaturaMAX(TMAXtemp);
             validarNuevosValores();
@@ -102,11 +99,9 @@ public class Modelo {
            PrintWriter pw = new PrintWriter(fichero);
            pw.println(cadenaNueva);
            fichero.close();
-           Log.d("my_tag", "Se supone que anda...");
         }
        catch (Exception e) {
            e.printStackTrace();
-           Log.d("my_tag", "Se rompe..");
        }
     }
 
