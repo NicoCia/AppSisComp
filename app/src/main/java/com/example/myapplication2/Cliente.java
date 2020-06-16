@@ -18,6 +18,7 @@ public class Cliente { /**no hace falta que sea runnable**/
     private Socket socket;                                          //socket
     private BufferedReader in;
     private PrintWriter out;
+    private boolean connection;
     private static final int SERVERPORT = 6000;                     //puerto el que les parezca yo puse este en (caso de que no funcione)
     private static final String SERVER_IP = "192.168.100.15";       //IP de la rasp
     private static final String MYTAG="mytag";                      //tag para el mensaje de debugging
@@ -29,13 +30,15 @@ public class Cliente { /**no hace falta que sea runnable**/
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(socket.getOutputStream());
 
-            this.data="";
-            this.flag=false;
+            this.flag = false;
+            this.connection = true;
 
         } catch (UnknownHostException e1) {
             e1.printStackTrace();
+            this.connection = false;
         } catch (IOException e1) {
             e1.printStackTrace();
+            this.connection = false;
         }
     }
 
@@ -45,33 +48,39 @@ public class Cliente { /**no hace falta que sea runnable**/
         try{
             out.write(message); /**para escribir**/
             out.flush();
-            out.close();
-            socket.close();
+            //out.close();
+            //socket.close();
             Log.d(MYTAG, "socketSending: ");
             //flag=true;
         }
-        catch (UnknownHostException e) {
+        /*catch (UnknownHostException e) {
             e.printStackTrace();
         }
         catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public String socketReceive(){
+    public String socketReceive () {
         String datoRecibido = "";
         try {
             datoRecibido = in.readLine();
+            //in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return datoRecibido;
     }
 
-    public boolean resultadoEnvio() {
+    public boolean resultadoEnvio () {
         return flag;
     }
+
+    public boolean getConnection () {
+        return connection;
+    }
+
 }
