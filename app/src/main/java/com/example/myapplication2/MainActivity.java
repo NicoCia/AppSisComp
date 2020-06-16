@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        startService(new Intent(this, Controlador.class));
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -39,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }, 2000);
+
     }
 
     /**

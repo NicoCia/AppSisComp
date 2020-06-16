@@ -12,7 +12,13 @@
         <service
             android:name=".Controlador"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.CONTROL" />
+
+            <category android:name="android.intent.category.CONTROL" />
+        </intent-filter>
+        </service>
 
         <activity
             android:name=".MainActivity"

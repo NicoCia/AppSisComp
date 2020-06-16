@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -47,6 +48,7 @@ public class Vista extends AppCompatActivity {
             limH = Integer.parseInt(aux.substring(9,11));
             Tvalue = aux.substring(17,19);
             Hvalue = aux.substring(25,27);
+            fileInput.close();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -85,8 +87,8 @@ public class Vista extends AppCompatActivity {
      */
     public void isEvent(View view){
         Intent intent = new Intent("is-event");
-        intent.putExtra("Temp", "temperaturaMAX " + limT);
-        intent.putExtra("Temp", "humedadMIN " + limH);
+        intent.putExtra("Temp", limT);
+        intent.putExtra("Hum", limH);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -102,6 +104,7 @@ public class Vista extends AppCompatActivity {
             String aux = br.readLine();
             Tvalue = aux.substring(17,19);
             Hvalue = aux.substring(25,27);
+            fileInput.close();
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -122,7 +125,9 @@ public class Vista extends AppCompatActivity {
                 new IntentFilter("update-view"));
     }
 
-    // handler for received Intents for the "my-event" event
+    /**
+     * Manejador para recivir intents desde el servicio Controlador
+     */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

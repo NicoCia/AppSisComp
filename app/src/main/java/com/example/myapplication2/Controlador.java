@@ -9,28 +9,44 @@ import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
 import android.os.RemoteException;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.io.File;
 import java.io.FileDescriptor;
 
-public class Controlador extends Service implements Runnable{
+public class Controlador extends Service{
     private BroadcastReceiver mMessageReceiver;
     private Modelo modelo;
+    private static final long updateTime = 900000;
+    private static final String filename = "my_data.txt";
+    private static final String TAG = "my_tag";
+    private static long timeStamp;
+    private static int temp;
+    private static int hum;
+    private static String meds;
     private Cliente cliente;
+    private Thread workerThread = null;
 
     private boolean event;
+    @Override
+    public void onCreate(){
+        Log.d(TAG, "Servicio creado...");
+        this.modelo = new Modelo(new File(this.getApplicationContext().getFilesDir(), filename).getAbsolutePath());
+        //this.cliente = cliente;
+        this.timeStamp = System.currentTimeMillis();
 
-    public Controlador(Modelo modelo, Cliente cliente) {
-        this.modelo = modelo;
-        this.cliente = cliente;
 
         this.mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 checkEvent(true);
+                temp = intent.getIntExtra("Temp",0);
+                hum = intent.getIntExtra("Hum",0);
+                Log.d(TAG, "Entro!!...");
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
@@ -39,8 +55,48 @@ public class Controlador extends Service implements Runnable{
     }
 
     @Override
-    public void run() {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+        Log.d(TAG, "Servicio iniciado...");
+        if(workerThread == null || !workerThread.isAlive()) {
+            workerThread = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        Log.d("myTag", "llegue");
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    updateModel("temperatura 85 humedad 93");
+                        /*try {
+                            Log.d("myTag", "llegue");
+                            Thread.sleep(15000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }*/
+                    updateView();
+                    //Aquí se realiza el trabajo del hilo secundario
+                    while(true) {
 
+                        if (checkEvent(false)) {
+                            updateModel("temperaturaMAX "+temp);
+                            updateModel("humedadMIN "+hum);
+                        }
+                        if (timeStamp - System.currentTimeMillis() >= updateTime) {
+                            timeStamp = System.currentTimeMillis();
+                            //String aux = cliente.socketReceive();
+                        }
+                    }
+                }
+            });
+            workerThread.start();
+        }
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "Servicio destruido...");
     }
 
     @Override
@@ -49,9 +105,19 @@ public class Controlador extends Service implements Runnable{
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    /**
+     * Metodo de actualizacion de la vista, lanza intent a traves de un LocalBroadcast
+     */
     private void updateView() {
         Intent intent = new Intent("update-view");
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    /**
+     * Metodo de actualizacion del modelo, carga
+     */
+    private void updateModel(String cadena){
+        modelo.updateModel(cadena);
     }
 
     synchronized private boolean checkEvent(boolean setFlag){

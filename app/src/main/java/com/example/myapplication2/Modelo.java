@@ -1,5 +1,7 @@
 package com.example.myapplication2;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
+import java.util.Scanner;
 
 
 public class Modelo {
@@ -21,10 +25,11 @@ public class Modelo {
     public Modelo(String pathArchivo){
         try {
             File archivo = new File (pathArchivo);
-            FileReader fr = null;
-            fr = new FileReader(archivo);
-            BufferedReader br = new BufferedReader(fr);
-            String aux = br.readLine();
+            Scanner input = new Scanner(archivo);
+            String aux = input.nextLine();
+            //FileReader fr = new FileReader(archivo);
+            //BufferedReader br = new BufferedReader(fr);
+            //String aux = br.readLine();
             temperatura =    Integer.parseInt(aux.substring(17,19));
             humedad =        Integer.parseInt(aux.substring(25,27));
             temperaturaMAX = Integer.parseInt(aux.substring(3,5));
@@ -32,6 +37,7 @@ public class Modelo {
             tiempo=0;
             alarma=false;
             pathname = pathArchivo;
+            input.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -52,25 +58,27 @@ public class Modelo {
     public void updateModel(String cadena){
         //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
         if(cadena.length()==25) {
-            int Ttemp = Integer.parseInt(cadena.substring(12, 13));
-            int Htemp = Integer.parseInt(cadena.substring(23, 24));
+            int Ttemp = Integer.parseInt(cadena.substring(12, 14));
+            int Htemp = Integer.parseInt(cadena.substring(23, 25));
             setTemperatura(Ttemp);
             setHumedad(Htemp);
             validarNuevosValores();
         }
         //temperaturaMAX xx
-        else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==18){
-            int TMAXtemp = Integer.parseInt(cadena.substring(16, 17));
+        else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==17){
+            Log.d("my_tag","adentrooo");
+            int TMAXtemp = Integer.parseInt(cadena.substring(15, 17));
             setTemperaturaMAX(TMAXtemp);
             validarNuevosValores();
         }
         //humedadMIN xx
         else if(cadena.startsWith("humedadMIN")&&cadena.length()==13){
-            int HMINtemp = Integer.parseInt(cadena.substring(11, 12));
+            int HMINtemp = Integer.parseInt(cadena.substring(11, 13));
             setHumedadMIN(HMINtemp);
             validarNuevosValores();
         }
         actualizarArchivo();
+
     }
 
     private void validarNuevosValores(){
@@ -90,12 +98,15 @@ public class Modelo {
         String cadenaNueva= "T: "+temperaturaMAX+" H: "+ humedadMIN;
         cadenaNueva+=" tAct "+formatoDosDigitos(temperatura)+" hAct "+formatoDosDigitos(humedad)+"\0";
        try{
-           FileWriter fichero = new FileWriter(pathname);
+           FileWriter fichero = new FileWriter(pathname,false);
            PrintWriter pw = new PrintWriter(fichero);
            pw.println(cadenaNueva);
+           fichero.close();
+           Log.d("my_tag", "Se supone que anda...");
         }
        catch (Exception e) {
            e.printStackTrace();
+           Log.d("my_tag", "Se rompe..");
        }
     }
 
