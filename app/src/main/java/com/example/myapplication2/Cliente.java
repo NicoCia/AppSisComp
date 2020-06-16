@@ -41,9 +41,6 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
             this.banderaEnvio=false;
             this.finComunicacion=false;
 
-        } catch (UnknownHostException e1) {
-            e1.printStackTrace();
-            this.connection = false;
         } catch (IOException e1) {
             e1.printStackTrace();
             this.connection = false;
@@ -52,7 +49,7 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
 
     @Override
     public void run() {
-        while(!finComunicacion==true){
+        while(!finComunicacion){
             if(hayMensajeParaEnviar()){
                 socketSend(data);
             }
@@ -94,17 +91,16 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
 
     // Método para enviar el mensaje, que se pasa por parámetro.
     public void socketSend(String message){
-        while(finComunicacion==false){
-            try{
-                out.write(message); /**para escribir**/
-                out.flush();
-                Log.d(MYTAG, "socketSending: ");
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-            banderaEnvio=false;
+        try{
+           out.write(message); //para
+           out.flush();
+           Log.d(MYTAG, "socketSending: ");
         }
+        catch (Exception e) {
+           e.printStackTrace();
+        }
+        banderaEnvio=false;
+
 
     }
 
