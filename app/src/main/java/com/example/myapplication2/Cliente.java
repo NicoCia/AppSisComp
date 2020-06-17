@@ -42,8 +42,8 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
             this.finComunicacion=false;
 
         } catch (IOException e1) {
-            e1.printStackTrace();
             this.connection = false;
+            e1.printStackTrace();
         }
     }
 
@@ -63,8 +63,10 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
     private void cerrarSocket(){
         try {
             out.close();
+            in.close();
             socket.close();
         } catch (IOException e) {
+            connection = false;
             e.printStackTrace();
         }
     }
@@ -90,7 +92,7 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
 
 
     // Método para enviar el mensaje, que se pasa por parámetro.
-    public void socketSend(String message){
+    private void socketSend(String message){
         try{
            out.write(message); //para
            out.flush();
@@ -104,11 +106,10 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
 
     }
 
-    public void socketReceive () {
+    private void socketReceive () {
         try {
             this.datoRecibido = in.readLine();
             datoNuevo=true;
-            //in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,10 +122,6 @@ public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
 
     public boolean isDatoNuevo(){
         return datoNuevo;
-    }
-
-    public boolean resultadoEnvio () {
-        return flag;
     }
 
     public boolean getConnection () {

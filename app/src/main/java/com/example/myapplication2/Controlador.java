@@ -25,8 +25,8 @@ public class Controlador extends Service{
     private static final String filename = "my_data.txt";
     private static final String TAG = "my_tag";
     private static long timeStamp;
-    private static int temp;
-    private static int hum;
+    private static int tempMAX;
+    private static int humMIN;
     private static String meds;
     private Cliente cliente;
     private Thread workerThread = null;
@@ -36,7 +36,8 @@ public class Controlador extends Service{
     public void onCreate(){
         Log.d(TAG, "Servicio creado...");
         this.modelo = new Modelo(new File(this.getApplicationContext().getFilesDir(), filename).getAbsolutePath());
-        //this.cliente = cliente;
+        this.cliente = new Cliente();
+        new Thread(cliente).start();
         this.timeStamp = System.currentTimeMillis();
 
 
@@ -44,8 +45,8 @@ public class Controlador extends Service{
             @Override
             public void onReceive(Context context, Intent intent) {
                 checkEvent(true);
-                temp = intent.getIntExtra("Temp",0);
-                hum = intent.getIntExtra("Hum",0);
+                tempMAX = intent.getIntExtra("Temp",0);
+                humMIN = intent.getIntExtra("Hum",0);
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
@@ -61,33 +62,24 @@ public class Controlador extends Service{
             workerThread = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(15000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    //TODO implementar cada vez que muestreo pregunto si hay alarma, solo soy cliente,
-                    /**
-                     *
-                     */
-                    //updateModel("temperatura 85 humedad 93");
-                        /*try {
-                            Log.d("myTag", "llegue");
-                            Thread.sleep(15000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }*/
-                    //updateView();
-                    //Aquí se realiza el trabajo del hilo secundario
                     while(true) {
 
                         if (checkEvent(false)) {
-                            updateModel("temperaturaMAX "+temp);
-                            updateModel("humedadMIN "+hum);
+                            updateModel("temperaturaMAX " + tempMAX);
+                            updateModel("humedadMIN " + humMIN);
+                            if(cliente.getConnection()){
+                                cliente.enviar("temperatura " + tempMAX);
+                                cliente.enviar("humedad " + humMIN);
+                            }
                         }
-                        if (timeStamp - System.currentTimeMillis() >= updateTime) {
+                        /*if (timeStamp - System.currentTimeMillis() >= updateTime) {
+
                             timeStamp = System.currentTimeMillis();
-                            //String aux = cliente.socketReceive();
-                        }
+                        }*/
                     }
                 }
             });
