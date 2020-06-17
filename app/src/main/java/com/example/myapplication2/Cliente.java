@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Cliente implements Runnable{ /**no hace falta que sea runnable**/
+public class Cliente implements Runnable{
 
     //public static final String EXTRA_MESSAGE = "com.example.myapplication.MESSAGE";
     private boolean flag;

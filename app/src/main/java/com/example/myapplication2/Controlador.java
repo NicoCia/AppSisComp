@@ -57,9 +57,8 @@ public class Controlador extends Service{
                 humMIN = intent.getIntExtra("Hum",0);
             }
         };
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("is-event"));
-
-
     }
 
     @Override
