@@ -20,6 +20,8 @@ public class Modelo {
     private int humedadMIN;
     private int tiempo;
     private boolean alarma;
+    private boolean alarmaT;
+    private boolean alarmaH;
     private String pathname;
 
     public Modelo(String pathArchivo){
@@ -34,6 +36,8 @@ public class Modelo {
             humedadMIN =     Integer.parseInt(aux.substring(9,11));
             tiempo=0;
             alarma=false;
+            alarmaT=false;
+            alarmaH=false;
             pathname = pathArchivo;
             fr.close();
         } catch (FileNotFoundException e) {
@@ -46,8 +50,7 @@ public class Modelo {
     /**  Recibe un string y actualiza las variables asociadas, controlando si los valores se
         encuentran en los limites permitidos.
         Los formatos de mensaje válidos son:
-            - temperatura xx
-            - humedad xx
+            - temperatura xx humedad xx
             - temperaturaMAX xx
             - humedadMIN xx
         Si los valores de temperatura y humedad están fuera de rango, se notifica al controlador y
@@ -55,44 +58,54 @@ public class Modelo {
 
      **/
     public void updateModel(String cadena){
-        //substring(int beginIndex, int endIndex) temperatura xx -> 14 de largo
-        if(cadena.startsWith("temperatura")&&cadena.length()==14) {
+        //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
+        if(cadena.length()==25) {
             int Ttemp = Integer.parseInt(cadena.substring(12, 14));
+            int Htemp = Integer.parseInt(cadena.substring(23, 25));
             setTemperatura(Ttemp);
-        }
-        //humedad xx
-        else if(cadena.startsWith("humedad")&&cadena.length()==10){
-            int Htemp = Integer.parseInt(cadena.substring(8, 10));
             setHumedad(Htemp);
+            validarNuevosValores();
         }
         //temperaturaMAX xx
         else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==17){
             int TMAXtemp = Integer.parseInt(cadena.substring(15, 17));
             setTemperaturaMAX(TMAXtemp);
-            validarNuevosValores();
         }
         //humedadMIN xx
         else if(cadena.startsWith("humedadMIN")&&cadena.length()==13){
             int HMINtemp = Integer.parseInt(cadena.substring(11, 13));
             setHumedadMIN(HMINtemp);
-            validarNuevosValores();
+
         }
+        else if(cadena.toLowerCase().startsWith("alarma: t")){
+            setAlarmaT(true);
+        }
+        else if(cadena.toLowerCase().startsWith("alarma: h")){
+            setAlarmaH(true);
+        }
+
         validarNuevosValores();
         actualizarArchivo();
 
     }
 
     private void validarNuevosValores(){
-        if(fueraDeLimites()){
-            setAlarma(true);
+        if(TfueraDeLimites()){
+            setAlarmaT(true);
             notificar();
         }
-        else setAlarma(false);
+        else setAlarmaT(false);
+        if(HfueraDeLimites()){
+            setAlarmaH(true);
+            notificar();
+        }
+        else setAlarmaH(false);
     }
 
-    private boolean fueraDeLimites(){
-        return temperatura>=temperaturaMAX||humedad<humedadMIN;
+    private boolean TfueraDeLimites(){
+        return temperatura>=temperaturaMAX;
     }
+    private boolean HfueraDeLimites() { return humedad<humedadMIN;}
 
     private void actualizarArchivo(){
         //Formato del string del archivo: "T: 60 H: 40 tAct 00 hAct 00\0"
@@ -168,5 +181,19 @@ public class Modelo {
         this.alarma = alarma;
     }
 
+    public void setAlarmaT(boolean alarmaT) {
+        this.alarmaT = alarmaT;
+    }
 
+    public boolean isAlarmaT() {
+        return alarmaT;
+    }
+
+    public void setAlarmaH(boolean alarmaH) {
+        this.alarmaH = alarmaH;
+    }
+
+    public boolean isAlarmaH() {
+        return alarmaH;
+    }
 }
