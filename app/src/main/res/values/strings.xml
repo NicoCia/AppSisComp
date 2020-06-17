@@ -8,4 +8,6 @@
     <string name="down">-</string>
     <string name="TempUnit">°C</string>
     <string name="HumUnit">%</string>
+    <string name="channel_name">Alarmas</string>
+    <string name="channel_description">canal para enviar notificaciones de alarmas</string>
 </resources>

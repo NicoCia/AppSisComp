@@ -1,12 +1,17 @@
 package com.example.myapplication2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -121,18 +126,15 @@ public class Vista extends AppCompatActivity {
         super.onResume();
 
         // Register mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("update-view"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("update-view"));
     }
 
     /**
-     * Manejador para recivir intents desde el servicio Controlador
+     * Manejador para recivir intents de actualizacion de vista desde el servicio Controlador
      */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Extract data included in the Intent
-            //TODO resibir mas de un intent filter, si se actualizo desplegar mensajito de que los valores fueron guardados con exito
             printData();
         }
     };

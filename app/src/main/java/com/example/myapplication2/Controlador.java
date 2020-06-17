@@ -1,10 +1,14 @@
 package com.example.myapplication2;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.Parcel;
@@ -13,6 +17,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.File;
@@ -24,6 +30,8 @@ public class Controlador extends Service{
     private static final long updateTime = 900000;
     private static final String filename = "my_data.txt";
     private static final String TAG = "my_tag";
+    private static final String CHANNEL_ID = "ALARMAS";
+    private static final int notificationId = 13;
     private static long timeStamp;
     private static int tempMAX;
     private static int humMIN;
@@ -44,13 +52,13 @@ public class Controlador extends Service{
         this.mMessageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                checkEvent(true);
+                setEvent();
                 tempMAX = intent.getIntExtra("Temp",0);
                 humMIN = intent.getIntExtra("Hum",0);
             }
         };
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("is-event"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("is-event"));
+
 
     }
 
@@ -62,13 +70,21 @@ public class Controlador extends Service{
             workerThread = new Thread(new Runnable() {
                 public void run() {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     while(true) {
+                        if(cliente.isDatoNuevo()){
+                            updateModel(cliente.leerMensaje());
+                            if(modelo.isAlarma()){
+                                if(modelo.isAlarmaH()) isAlarm("humedad");
+                                if(modelo.isAlarmaT()) isAlarm("temperatura");
+                            }
+                            updateView();
+                        }
 
-                        if (checkEvent(false)) {
+                        if (checkEvent()) {
                             updateModel("temperaturaMAX " + tempMAX);
                             updateModel("humedadMIN " + humMIN);
                             if(cliente.getConnection()){
@@ -76,10 +92,10 @@ public class Controlador extends Service{
                                 cliente.enviar("humedad " + humMIN);
                             }
                         }
-                        /*if (timeStamp - System.currentTimeMillis() >= updateTime) {
-
+                        if ((timeStamp - System.currentTimeMillis() >= updateTime)&&(cliente.getConnection())) {
+                            cliente.enviar("Leer");
                             timeStamp = System.currentTimeMillis();
-                        }*/
+                        }
                     }
                 }
             });
@@ -114,15 +130,70 @@ public class Controlador extends Service{
         modelo.updateModel(cadena);
     }
 
-    synchronized private boolean checkEvent(boolean setFlag){
-        if(setFlag) {
-            this.event=true;
-            return event;
-        }
-        else if(event){
+    private boolean checkEvent(){
+        if(event){
             this.event=false;
             return true;
         }
         else return false;
+    }
+
+    private void setEvent(){
+        this.event=true;
+    }
+
+    private void isAlarm(String mensaje){
+        String textTitle, textContent;
+        if(mensaje.equals("humedad")){
+            textTitle="Hora de regar!!";
+            textContent = "La Humedad de tu compost está por debajo de la deseada";
+        }
+        else {
+            textTitle="Esto esta que arde!!";
+            textContent = "La Temperatura de tu compost ha superado el limite";
+        }
+
+        createNotificationChannel();
+
+        Intent intent = new Intent(this, Vista.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(textTitle)
+                .setContentText(textContent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(textContent))
+                // Set the intent that will fire when the user taps the notification
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(notificationId, builder.build());
+
+    }
+
+    /**
+     * Creador de canales de notificacion
+     */
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }
