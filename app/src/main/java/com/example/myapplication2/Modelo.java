@@ -46,7 +46,8 @@ public class Modelo {
     /**  Recibe un string y actualiza las variables asociadas, controlando si los valores se
         encuentran en los limites permitidos.
         Los formatos de mensaje válidos son:
-            - temperatura xx humedad xx
+            - temperatura xx
+            - humedad xx
             - temperaturaMAX xx
             - humedadMIN xx
         Si los valores de temperatura y humedad están fuera de rango, se notifica al controlador y
@@ -54,13 +55,15 @@ public class Modelo {
 
      **/
     public void updateModel(String cadena){
-        //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
-        if(cadena.length()==25) {
+        //substring(int beginIndex, int endIndex) temperatura xx -> 14 de largo
+        if(cadena.startsWith("temperatura")&&cadena.length()==14) {
             int Ttemp = Integer.parseInt(cadena.substring(12, 14));
-            int Htemp = Integer.parseInt(cadena.substring(23, 25));
             setTemperatura(Ttemp);
+        }
+        //humedad xx
+        else if(cadena.startsWith("humedad")&&cadena.length()==10){
+            int Htemp = Integer.parseInt(cadena.substring(8, 10));
             setHumedad(Htemp);
-            validarNuevosValores();
         }
         //temperaturaMAX xx
         else if(cadena.startsWith("temperaturaMAX")&&cadena.length()==17){
@@ -74,6 +77,7 @@ public class Modelo {
             setHumedadMIN(HMINtemp);
             validarNuevosValores();
         }
+        validarNuevosValores();
         actualizarArchivo();
 
     }
