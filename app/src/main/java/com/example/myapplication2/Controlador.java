@@ -37,7 +37,7 @@ public class Controlador extends Service{
         Log.d(TAG, "Servicio creado...");
         this.modelo = new Modelo(new File(this.getApplicationContext().getFilesDir(), filename).getAbsolutePath());
         this.cliente = new Cliente();
-        new Thread(cliente).start();
+        if(cliente.getConnection())new Thread(cliente).start();
         this.timeStamp = System.currentTimeMillis();
 
 
