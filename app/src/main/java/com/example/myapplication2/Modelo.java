@@ -180,7 +180,7 @@ public class Modelo {
     }
 
     public boolean isAlarma() {
-        return alarma;
+        return alarmaT||alarmaH;
     }
 
     public void setAlarma(boolean alarma) {
