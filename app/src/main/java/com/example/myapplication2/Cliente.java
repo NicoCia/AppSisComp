@@ -23,9 +23,10 @@ public class Cliente implements Runnable{
     private boolean finComunicacion;
     private String datoRecibido;
     private boolean datoNuevo;
-    private static final int SERVERPORT = 6000;                     //puerto el que les parezca yo puse este en (caso de que no funcione)
-    private static final String SERVER_IP = "192.168.100.15";       //IP de la rasp
-    private static final String MYTAG="mytag";                      //tag para el mensaje de debugging
+    private static final int SERVERPORT = 50000;                     //puerto el que les parezca yo puse este en (caso de que no funcione)
+    //private static final String SERVER_IP = "192.168.1.100";       //IP de la rasp
+    private static final String SERVER_IP = "192.168.56.1";
+    private static final String MYTAG="my_tag";                      //tag para el mensaje de debugging
 
 
     public Cliente() {
@@ -40,9 +41,11 @@ public class Cliente implements Runnable{
 
             this.banderaEnvio=false;
             this.finComunicacion=false;
+            Log.d(MYTAG,"\nComunicacion exitosa\n");
 
         } catch (IOException e1) {
             this.connection = false;
+            Log.d(MYTAG,"\nFallo conexion\n");
             e1.printStackTrace();
         }
     }
@@ -96,7 +99,7 @@ public class Cliente implements Runnable{
         try{
            out.write(message); //para
            out.flush();
-           Log.d(MYTAG, "socketSending: ");
+           Log.d(MYTAG, "socketSending: " + message);
         }
         catch (Exception e) {
            e.printStackTrace();
@@ -109,6 +112,7 @@ public class Cliente implements Runnable{
     private void socketReceive () {
         try {
             this.datoRecibido = in.readLine();
+            Log.d("my_tag","Reciv = " + datoRecibido);
             datoNuevo=true;
         } catch (IOException e) {
             e.printStackTrace();

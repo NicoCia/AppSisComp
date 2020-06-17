@@ -85,6 +85,10 @@ public class Modelo {
         else if(cadena.toLowerCase().startsWith("alarma: h")){
             setAlarmaH(true);
         }
+        else {
+            String out = "mensaje = " + cadena;
+            Log.d("my_tag",out);
+        }
 
         actualizarArchivo();
 

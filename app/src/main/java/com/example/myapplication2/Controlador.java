@@ -27,7 +27,8 @@ import java.io.FileDescriptor;
 public class Controlador extends Service{
     private BroadcastReceiver mMessageReceiver;
     private Modelo modelo;
-    private static final long updateTime = 900000;
+    //private static final long updateTime = 900000;
+    private static final long updateTime = 30000;
     private static final String filename = "my_data.txt";
     private static final String TAG = "my_tag";
     private static final String CHANNEL_ID = "ALARMAS";
@@ -44,8 +45,7 @@ public class Controlador extends Service{
     public void onCreate(){
         Log.d(TAG, "Servicio creado...");
         this.modelo = new Modelo(new File(this.getApplicationContext().getFilesDir(), filename).getAbsolutePath());
-        this.cliente = new Cliente();
-        if(cliente.getConnection())new Thread(cliente).start();
+
         this.timeStamp = System.currentTimeMillis();
 
 
@@ -68,6 +68,8 @@ public class Controlador extends Service{
         if(workerThread == null || !workerThread.isAlive()) {
             workerThread = new Thread(new Runnable() {
                 public void run() {
+                    cliente = new Cliente();
+                    if(cliente.getConnection())new Thread(cliente).start();
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -88,10 +90,15 @@ public class Controlador extends Service{
                             updateModel("humedadMIN " + humMIN);
                             if(cliente.getConnection()){
                                 cliente.enviar("temperatura " + tempMAX);
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 cliente.enviar("humedad " + humMIN);
                             }
                         }
-                        if ((timeStamp - System.currentTimeMillis() >= updateTime)&&(cliente.getConnection())) {
+                        if ((System.currentTimeMillis() - timeStamp >= updateTime)&&(cliente.getConnection())) {
                             cliente.enviar("Leer");
                             timeStamp = System.currentTimeMillis();
                         }
