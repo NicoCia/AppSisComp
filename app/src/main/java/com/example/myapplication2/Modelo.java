@@ -61,6 +61,7 @@ public class Modelo {
      **/
     public void updateModel(String cadena){
         //substring(int beginIndex, int endIndex) temperatura xx humedad xx -> 25 de largo
+        if(cadena.startsWith("b")) cadena=cadena.substring(2,cadena.length()-1);
         if(cadena.length()==25) {
             int Ttemp = Integer.parseInt(cadena.substring(12, 14));
             int Htemp = Integer.parseInt(cadena.substring(23, 25));
