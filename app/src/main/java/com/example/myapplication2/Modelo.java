@@ -53,6 +53,8 @@ public class Modelo {
             - temperatura xx humedad xx
             - temperaturaMAX xx
             - humedadMIN xx
+            - alarma: exceso de temperatura / la a de alarma, e y t pueden estan en mayus o min
+            - alarma: humedad faltante / La a de alarma h y t pueden estar en mayus o min
         Si los valores de temperatura y humedad están fuera de rango, se notifica al controlador y
         se setea alarma en 1.
 
@@ -77,14 +79,13 @@ public class Modelo {
             setHumedadMIN(HMINtemp);
 
         }
-        else if(cadena.toLowerCase().startsWith("alarma: t")){
+        else if(cadena.toLowerCase().startsWith("alarma: e")){
             setAlarmaT(true);
         }
         else if(cadena.toLowerCase().startsWith("alarma: h")){
             setAlarmaH(true);
         }
 
-        validarNuevosValores();
         actualizarArchivo();
 
     }
